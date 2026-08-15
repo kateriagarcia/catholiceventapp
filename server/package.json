@@ -1,0 +1,26 @@
+{
+  "name": "parish-event-finder-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "migrate": "node db/migrate.js",
+    "seed": "node db/seed.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "ics": "^3.8.1",
+    "node-cron": "^3.0.3",
+    "stripe": "^17.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

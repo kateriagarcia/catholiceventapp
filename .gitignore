@@ -1,0 +1,13 @@
+node_modules/
+dist/
+dist-ssr/
+*.log
+
+# Env files (copy from .env.example)
+.env
+.env.local
+
+# SQLite database + WAL files
+server/data/
+
+.DS_Store
