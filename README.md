@@ -131,3 +131,35 @@ deployed API URL, and `server`'s `CLIENT_ORIGIN` at the deployed frontend
 URL. SQLite works fine for a single-instance deployment; if you outgrow it,
 swap `better-sqlite3` for a Postgres client — the schema was written to
 port over directly (see the note at the top of `schema.sql`).
+
+### Deploying to Render (free tier)
+
+`render.yaml` at the repo root defines both services as a Blueprint — Render
+reads it automatically when you create a Blueprint from this repo, so you
+don't have to configure build/start commands by hand.
+
+**Free-tier tradeoff:** the API service has no persistent disk, so its
+SQLite database resets on every cold start (the service spins down after 15
+minutes idle). `startCommand` re-runs migrate + seed on every startup so the
+app always comes back up with the base seed data — but anything added after
+launch (approved submissions, sponsors, manually-added events) won't survive
+a restart. Fine for demoing; upgrade the API service to a paid plan with a
+disk once you want data to stick.
+
+1. Push this repo to GitHub (already done) and go to
+   [dashboard.render.com](https://dashboard.render.com) → **New** → **Blueprint**,
+   then connect this repo. Render will detect `render.yaml` and propose both
+   services.
+2. It'll prompt for the `sync: false` variables before deploying:
+   - `ADMIN_PASSWORD` — pick something other than the example default.
+   - `CLIENT_ORIGIN`, `VITE_API_URL` — leave blank for now, see step 3.
+   - The `STRIPE_*` vars — leave blank unless you're enabling sponsor checkout now.
+3. Deploy. Render assigns each service a URL like
+   `https://parish-event-finder-api.onrender.com` and
+   `https://parish-event-finder-client.onrender.com`. Once both are up, go to
+   each service's **Environment** tab and fill in the other's URL:
+   - On the API service, set `CLIENT_ORIGIN` to the client's URL.
+   - On the static site, set `VITE_API_URL` to the API's URL **+ `/api`**
+     (e.g. `https://parish-event-finder-api.onrender.com/api`).
+   Saving an env var triggers a redeploy of that service automatically.
+4. Open the client URL — that's your live site.
